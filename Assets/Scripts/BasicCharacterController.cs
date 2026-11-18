@@ -92,6 +92,9 @@ public class BasicCharacterController : MonoBehaviour
         if (Keyboard.current.aKey.isPressed)
             input.x -= 1f;
 
+        if (Keyboard.current.eKey.isPressed)
+            animator.SetTrigger("Dance");
+
         input = Vector2.ClampMagnitude(input, 1f);
 
         bool isRunning = Keyboard.current.leftShiftKey.isPressed;
@@ -104,12 +107,20 @@ public class BasicCharacterController : MonoBehaviour
             verticalVelocity.y = -2f;
 
         if (characterController.isGrounded && Keyboard.current.spaceKey.wasPressedThisFrame)
+        {
             verticalVelocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            animator.SetTrigger("IsJumping");
+        }
+            
 
         verticalVelocity.y += gravity * Time.deltaTime;
 
         Vector3 velocity = movement + verticalVelocity;
         characterController.Move(velocity * Time.deltaTime);
+        animator.SetFloat("Xspeed", movement.x);
+        animator.SetFloat("Yspeed", movement.z);
+
+        animator.SetBool("IsWalking", input.x != 0 || input.y != 0);
     }
 
     private void HandleMouseLook()
